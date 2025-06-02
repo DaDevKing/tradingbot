@@ -5,25 +5,30 @@ import streamlit as st
 import matplotlib.pyplot as plt
 
 st.set_page_config(layout="wide")
-st.title("📈 Smart Paper Trading Simulator")
+st.title("Lightning Trader: MACD, RSI, and Bollinger Bands Strategy by Jett S")
+
 ticker = st.sidebar.text_input("Enter Ticker", "AAPL")
 start = st.sidebar.date_input("Start Date", pd.to_datetime("2025-01-01"))
 end = st.sidebar.date_input("End Date", pd.to_datetime("2026-01-01"))
+
 data = yf.download(ticker, start=start, end=end, auto_adjust=False)
 
 data['EMA12'] = data['Close'].ewm(span=12).mean()
 data['EMA26'] = data['Close'].ewm(span=26).mean()
 data['MACD'] = data['EMA12'] - data['EMA26']
 data['Signal'] = data['MACD'].ewm(span=9).mean()
+
 delta = data['Close'].diff()
 gain = delta.where(delta > 0, 0).rolling(14).mean()
 loss = -delta.where(delta < 0, 0).rolling(14).mean()
 rs = gain / loss
 data['RSI'] = 100 - (100 / (1 + rs))
+
 data['MA20'] = data['Close'].rolling(window=20).mean()
 data['STD'] = data['Close'].rolling(window=20).std()
 data['Upper'] = data['MA20'] + 2 * data['STD']
 data['Lower'] = data['MA20'] - 2 * data['STD']
+
 data.dropna(inplace=True)
 
 cash = 10000
@@ -31,12 +36,13 @@ position = 0
 portfolio = []
 
 for i in range(len(data)):
-    price = data['Close'].iloc[i]
-    macd = data['MACD'].iloc[i]
-    signal = data['Signal'].iloc[i]
-    rsi = data['RSI'].iloc[i]
-    upper = data['Upper'].iloc[i]
-    lower = data['Lower'].iloc[i]
+    row = data.iloc[i]
+    price = row['Close']
+    macd = row['MACD']
+    signal = row['Signal']
+    rsi = row['RSI']
+    upper = row['Upper']
+    lower = row['Lower']
     if macd > signal and rsi < 30 and price < lower and cash >= price:
         shares = cash // price
         cash -= shares * price
@@ -55,7 +61,9 @@ ax[0].plot(data.index, data['Upper'], label='Upper Band', linestyle='--', alpha=
 ax[0].plot(data.index, data['Lower'], label='Lower Band', linestyle='--', alpha=0.5)
 ax[0].set_title(f'{ticker} Price and Bollinger Bands')
 ax[0].legend()
+
 ax[1].plot(data.index, data['Portfolio'], label='Portfolio Value', color='green')
 ax[1].set_title('Portfolio Value Over Time')
 ax[1].legend()
+
 st.pyplot(fig)

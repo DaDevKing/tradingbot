@@ -32,20 +32,23 @@ for i in range(len(d)):
     rsi = float(d['RSI'].iloc[i])
     upper = float(d['Upper'].iloc[i])
     lower = float(d['Lower'].iloc[i])
-    trend = d['EMA12'].iloc[i] > d['EMA26'].iloc[i]
+    ema_trend = d['EMA12'].iloc[i] > d['EMA26'].iloc[i]
 
-    buy = macd > signal and rsi < 35 and price < lower and trend
-    sell = macd < signal and rsi > 65 and price > upper and not trend
+    buy_cond = macd > signal and rsi < 35 and price < lower and ema_trend
+    sell_cond = macd < signal and rsi > 65 and price > upper and not ema_trend
 
-    if buy and cash >= price:
+    if buy_cond and cash >= price:
+        print(f"Buying at {price} on {d.index[i]}")
         shares = cash // price
         cash -= shares * price
         pos += shares
-    elif sell and pos > 0:
+    elif sell_cond and pos > 0:
+        print(f"Selling at {price} on {d.index[i]}")
         cash += pos * price
         pos = 0
 
     port.append(cash + pos * price)
+
 
 d['Portfolio'] = port
 

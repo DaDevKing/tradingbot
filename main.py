@@ -26,7 +26,10 @@ d.dropna(inplace=True)
 cash, pos, port = 10000, 0, []
 
 for i in range(len(d)):
-    price = float(d['Close'].iloc[i])
+    price = float(d['Close'].iloc[i:i+1].iloc[0])
+    if i == 0:
+        port.append(cash)  # Initialize portfolio with starting cash
+        continue
     macd = float(d['MACD'].iloc[i])
     signal = float(d['Signal'].iloc[i])
     rsi = float(d['RSI'].iloc[i])

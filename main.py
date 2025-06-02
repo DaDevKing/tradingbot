@@ -36,13 +36,13 @@ position = 0
 portfolio = []
 
 for i in range(len(data)):
-    row = data.iloc[i]
-    price = row['Close']
-    macd = row['MACD']
-    signal = row['Signal']
-    rsi = row['RSI']
-    upper = row['Upper']
-    lower = row['Lower']
+    price = data['Close'].iloc[i].item()
+    macd = data['MACD'].iloc[i].item()
+    signal = data['Signal'].iloc[i].item()
+    rsi = data['RSI'].iloc[i].item()
+    upper = data['Upper'].iloc[i].item()
+    lower = data['Lower'].iloc[i].item()
+    
     if macd > signal and rsi < 30 and price < lower and cash >= price:
         shares = cash // price
         cash -= shares * price
@@ -52,6 +52,7 @@ for i in range(len(data)):
         position = 0
     total = cash + position * price
     portfolio.append(total)
+
 
 data['Portfolio'] = portfolio
 

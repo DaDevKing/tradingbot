@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 st.set_page_config(layout="wide")
 st.title("📈 Smart Paper Trading Simulator")
 ticker = st.sidebar.text_input("Enter Ticker", "AAPL")
-start = st.sidebar.date_input("Start Date", pd.to_datetime("2022-01-01"))
-end = st.sidebar.date_input("End Date", pd.to_datetime("2023-01-01"))
+start = st.sidebar.date_input("Start Date", pd.to_datetime("2025-01-01"))
+end = st.sidebar.date_input("End Date", pd.to_datetime("2026-01-01"))
 data = yf.download(ticker, start=start, end=end, auto_adjust=False)
 
 data['EMA12'] = data['Close'].ewm(span=12).mean()

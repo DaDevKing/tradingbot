@@ -42,12 +42,12 @@ for i in range(len(d)):
     sell_cond = macd < signal and rsi > 65 and price > upper and not ema_trend
 
     if buy_cond and cash >= price:
-        print(f"Buying at {price} on {d.index[i]}")
+        st.write(f"Buying at {price} on {d.index[i]}")
         shares = cash // price
         cash -= shares * price
         pos += shares
     elif sell_cond and pos > 0:
-        print(f"Selling at {price} on {d.index[i]}")
+        st.write(f"Selling at {price} on {d.index[i]}")
         cash += pos * price
         pos = 0
 

@@ -36,6 +36,7 @@ for i in range(len(d)):
     upper = float(d['Upper'].iloc[i])
     lower = float(d['Lower'].iloc[i])
     ema_trend = d['EMA12'].iloc[i] > d['EMA26'].iloc[i]
+    
 
     buy_cond = macd > signal and rsi < 35 and price < lower and ema_trend
     sell_cond = macd < signal and rsi > 65 and price > upper and not ema_trend
